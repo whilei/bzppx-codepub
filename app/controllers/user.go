@@ -3,9 +3,9 @@ package controllers
 import (
 	"bzppx-codepub/app/models"
 	"bzppx-codepub/app/utils"
+	"fmt"
 	"strings"
 	"time"
-	"fmt"
 )
 
 type UserController struct {

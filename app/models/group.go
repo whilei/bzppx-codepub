@@ -22,7 +22,7 @@ func (g *Group) GetGroupByGroupId(groupId string) (groups map[string]string, err
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Group_Name).Where(map[string]interface{}{
-		"group_id": groupId,
+		"group_id":  groupId,
 		"is_delete": GROUP_NORMAL,
 	}))
 	if err != nil {
@@ -37,7 +37,7 @@ func (g *Group) GetGroupsByGroupIds(groupIds []string) (groups []map[string]stri
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Group_Name).Where(map[string]interface{}{
-		"group_id": groupIds,
+		"group_id":  groupIds,
 		"is_delete": GROUP_NORMAL,
 	}))
 	if err != nil {
@@ -53,8 +53,8 @@ func (g *Group) HasSameGroupName(groupId, name string) (has bool, err error) {
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Group_Name).Where(map[string]interface{}{
 		"group_id <>": groupId,
-		"name":   name,
-		"is_delete": GROUP_NORMAL,
+		"name":        name,
+		"is_delete":   GROUP_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -70,7 +70,7 @@ func (g *Group) HasGroupName(name string) (has bool, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Group_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": GROUP_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -87,7 +87,7 @@ func (g *Group) GetGroupByName(name string) (group map[string]string, err error)
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Group_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": GROUP_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -128,7 +128,7 @@ func (g *Group) Update(groupId string, group map[string]interface{}) (id int64, 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Exec(db.AR().Update(Table_Group_Name, group, map[string]interface{}{
-		"group_id": groupId,
+		"group_id":  groupId,
 		"is_delete": GROUP_NORMAL,
 	}))
 	if err != nil {
@@ -185,8 +185,8 @@ func (g *Group) GetGroups() (groups []map[string]string, err error) {
 		db.AR().
 			From(Table_Group_Name).
 			Where(map[string]interface{}{
-			"is_delete": GROUP_NORMAL,
-		}))
+				"is_delete": GROUP_NORMAL,
+			}))
 	if err != nil {
 		return
 	}
@@ -205,8 +205,8 @@ func (g *Group) CountGroups() (count int64, err error) {
 			Select("count(*) as total").
 			From(Table_Group_Name).
 			Where(map[string]interface{}{
-			"is_delete": GROUP_NORMAL,
-		}))
+				"is_delete": GROUP_NORMAL,
+			}))
 	if err != nil {
 		return
 	}

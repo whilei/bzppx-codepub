@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"io/ioutil"
-	"runtime"
-	"os"
-	"strings"
+	"bzppx-codepub/app/utils"
+	"bzppx-codepub/install/storage"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
+	"io/ioutil"
+	"os"
+	"runtime"
 	"strconv"
-	"bzppx-codepub/install/storage"
-	"bzppx-codepub/app/utils"
+	"strings"
 )
 
 type InstallController struct {
@@ -26,12 +26,12 @@ func (this *InstallController) License() {
 
 	if this.isPost() {
 		license_agree := this.GetString("license_agree", "")
-		if license_agree == "" || license_agree == "0"{
+		if license_agree == "" || license_agree == "0" {
 			this.jsonError("请先同意协议后再继续")
 		}
 		storage.Data.License = storage.License_Agree
 		this.jsonSuccess("", nil, "/install/env")
-	}else {
+	} else {
 		bytes, _ := ioutil.ReadFile("../LICENSE")
 		license := string(bytes)
 		this.Data["license"] = license
@@ -58,30 +58,30 @@ func (this *InstallController) Env() {
 	installDir, _ := os.Getwd()
 	installDir = strings.Replace(installDir, "install", "", 1)
 	server := map[string]string{
-		"host": host,
-		"sys": osSys,
+		"host":        host,
+		"sys":         osSys,
 		"install_dir": installDir,
 	}
 
 	// 环境检测
 	vm, _ := mem.VirtualMemory()
-	vmTotal := vm.Total/1024/1024
+	vmTotal := vm.Total / 1024 / 1024
 	cpuCount, _ := cpu.Counts(true)
 	memData := map[string]interface{}{
-		"name": "内存",
+		"name":    "内存",
 		"require": "512M",
-		"value": strconv.FormatInt(int64(vmTotal), 10)+"M",
-		"result": "1",
+		"value":   strconv.FormatInt(int64(vmTotal), 10) + "M",
+		"result":  "1",
 	}
 	if int(vmTotal) < 512 {
 		storage.Data.Env = storage.Env_NotAccess
 		memData["result"] = "0"
 	}
 	cpuData := map[string]interface{}{
-		"name": "CPU",
+		"name":    "CPU",
 		"require": "1核",
-		"value": strconv.Itoa(cpuCount)+"核",
-		"result": "1",
+		"value":   strconv.Itoa(cpuCount) + "核",
+		"result":  "1",
 	}
 	if cpuCount < 1 {
 		storage.Data.Env = storage.Env_NotAccess
@@ -94,44 +94,44 @@ func (this *InstallController) Env() {
 	// 目录文件检测
 	fileTool := utils.NewFile()
 	templateConfDir := map[string]string{
-		"path": "conf/template.conf",
+		"path":    "conf/template.conf",
 		"require": "读/写",
-		"result": "1",
+		"result":  "1",
 	}
-	err := fileTool.IsWriterReadable(installDir+templateConfDir["path"])
+	err := fileTool.IsWriterReadable(installDir + templateConfDir["path"])
 	if err != nil {
 		storage.Data.Env = storage.Env_NotAccess
 		templateConfDir["result"] = "0"
 	}
 
 	docsDir := map[string]string{
-		"path": "docs/databases/table.sql",
+		"path":    "docs/databases/table.sql",
 		"require": "读/写",
-		"result": "1",
+		"result":  "1",
 	}
-	err = fileTool.IsWriterReadable(installDir+docsDir["path"])
+	err = fileTool.IsWriterReadable(installDir + docsDir["path"])
 	if err != nil {
 		storage.Data.Env = storage.Env_NotAccess
 		docsDir["result"] = "0"
 	}
 
 	viewsDir := map[string]string{
-		"path": "views",
+		"path":    "views",
 		"require": "存在且不为空",
-		"result": "1",
+		"result":  "1",
 	}
-	isEmpty := utils.NewFile().PathIsEmpty(installDir+viewsDir["path"])
+	isEmpty := utils.NewFile().PathIsEmpty(installDir + viewsDir["path"])
 	if isEmpty == true {
 		storage.Data.Env = storage.Env_NotAccess
 		viewsDir["result"] = "0"
 	}
 
 	staticDir := map[string]string{
-		"path": "static",
+		"path":    "static",
 		"require": "存在且不为空",
-		"result": "1",
+		"result":  "1",
 	}
-	isEmpty = utils.NewFile().PathIsEmpty(installDir+staticDir["path"])
+	isEmpty = utils.NewFile().PathIsEmpty(installDir + staticDir["path"])
 	if isEmpty == true {
 		storage.Data.Env = storage.Env_NotAccess
 		staticDir["result"] = "0"
@@ -168,7 +168,7 @@ func (this *InstallController) Config() {
 
 		storage.Data.SystemConf = map[string]string{
 			"addr": addr,
-			"port": strconv.FormatInt(int64(port),10),
+			"port": strconv.FormatInt(int64(port), 10),
 		}
 		storage.Data.System = storage.Sys_Access
 		this.jsonSuccess("", nil, "/install/database")
@@ -226,15 +226,15 @@ func (this *InstallController) Database() {
 	}
 
 	storage.Data.DatabaseConf = map[string]string{
-		"host": host,
-		"port": port,
-		"name": name,
-		"user": user,
-		"pass": pass,
-		"conn_max_idle": connMaxIdle,
+		"host":                host,
+		"port":                port,
+		"name":                name,
+		"user":                user,
+		"pass":                pass,
+		"conn_max_idle":       connMaxIdle,
 		"conn_max_connection": connMaxConn,
-		"admin_name": adminName,
-		"admin_pass": adminPass,
+		"admin_name":          adminName,
+		"admin_pass":          adminPass,
 	}
 	storage.Data.Database = storage.Database_Access
 	this.jsonSuccess("", nil, "/install/ready")
@@ -256,10 +256,10 @@ func (this *InstallController) Ready() {
 
 	// 协议
 	licenseConf := map[string]interface{}{
-		"name": "许可协议",
-		"value": "同意",
+		"name":   "许可协议",
+		"value":  "同意",
 		"result": "1",
-		"url": "/install/license",
+		"url":    "/install/license",
 	}
 	if storage.Data.License != storage.License_Agree {
 		licenseConf["value"] = "未同意"
@@ -267,10 +267,10 @@ func (this *InstallController) Ready() {
 	}
 	//环境检测
 	envConf := map[string]interface{}{
-		"name": "环境检测",
-		"value": "通过",
+		"name":   "环境检测",
+		"value":  "通过",
 		"result": "1",
-		"url": "/install/env",
+		"url":    "/install/env",
 	}
 	if storage.Data.Env != storage.Env_Access {
 		envConf["value"] = "未通过"
@@ -278,10 +278,10 @@ func (this *InstallController) Ready() {
 	}
 	//系统配置
 	sysConf := map[string]interface{}{
-		"name": "系统配置",
-		"value": "完成",
+		"name":   "系统配置",
+		"value":  "完成",
 		"result": "1",
-		"url": "/install/config",
+		"url":    "/install/config",
 	}
 	if storage.Data.System != storage.Sys_Access {
 		sysConf["value"] = "未完成"
@@ -289,10 +289,10 @@ func (this *InstallController) Ready() {
 	}
 	//数据库配置
 	databaseConf := map[string]interface{}{
-		"name": "数据库配置",
-		"value": "完成",
+		"name":   "数据库配置",
+		"value":  "完成",
 		"result": "1",
-		"url": "/install/database",
+		"url":    "/install/database",
 	}
 	if storage.Data.Database != storage.Database_Access {
 		databaseConf["value"] = "未完成"
@@ -323,9 +323,9 @@ func (this *InstallController) End() {
 func (this *InstallController) Status() {
 
 	data := map[string]interface{}{
-		"status": storage.Data.Status,
+		"status":     storage.Data.Status,
 		"is_success": storage.Data.IsSuccess,
-		"result": storage.Data.Result,
+		"result":     storage.Data.Result,
 	}
 
 	this.jsonSuccess("ok", data)

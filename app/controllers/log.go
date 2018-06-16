@@ -140,7 +140,7 @@ func (this *LogController) Task() {
 	if err != nil {
 		this.viewError(err.Error(), "/log/task")
 	}
-	
+
 	tasklogsChangeKey := make(map[string]map[int]map[string]string)
 	for index, taskLog := range taskLogs {
 		_, ok := tasklogsChangeKey[taskLog["task_id"]]

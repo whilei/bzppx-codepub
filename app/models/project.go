@@ -53,9 +53,9 @@ func (p *Project) GetProjectByProjectIdsAndKeywords(projectIds []string, keyword
 	var rs *mysql.ResultSet
 
 	where := map[string]interface{}{
-		"name LIKE": "%" + keywords["keyword"] + "%",
+		"name LIKE":  "%" + keywords["keyword"] + "%",
 		"project_id": projectIds,
-		"is_delete": PROJECT_NORMAL,
+		"is_delete":  PROJECT_NORMAL,
 	}
 	groupId, _ := keywords["group_id"]
 	if groupId != "" {
@@ -306,7 +306,7 @@ func (project *Project) GetProjectsByLikeName(name string) (projects []map[strin
 }
 
 // 根据 project_ids 获取项目组数量
-func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err error){
+func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	sql := db.AR().Select("count(distinct group_id) as total").
@@ -323,14 +323,14 @@ func (p *Project) CountGroupByProjectIds(projectIds []string) (total int64, err 
 }
 
 // 根据 project_ids 获取 groupIds
-func (p *Project) GetGroupIdsByProjectIds(projectIds []string) (groupIds []string, err error){
+func (p *Project) GetGroupIdsByProjectIds(projectIds []string) (groupIds []string, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	sql := db.AR().Select("DISTINCT (group_id)").
 		From(Table_Project_Name).
 		Where(map[string]interface{}{
-		"project_id": projectIds,
-	})
+			"project_id": projectIds,
+		})
 	rs, err = db.Query(sql)
 	if err != nil {
 		return

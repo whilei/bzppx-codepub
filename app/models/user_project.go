@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/snail007/go-activerecord/mysql"
 	"bzppx-codepub/app/utils"
+	"github.com/snail007/go-activerecord/mysql"
 )
 
 const Table_UserProject_Name = "user_project"
@@ -23,7 +23,7 @@ func (p *UserProject) DeleteUserProjectByUserId(userId string) (err error) {
 func (p *UserProject) DeleteByUserIdProjectIds(userId string, projectIds []string) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().Delete(Table_UserProject_Name, map[string]interface{}{
-		"user_id": userId,
+		"user_id":    userId,
 		"project_id": projectIds,
 	}))
 	return

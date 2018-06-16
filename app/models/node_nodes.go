@@ -31,7 +31,7 @@ func (p *NodeNodes) DeleteNodeNodesByNodeId(nodeId string) (err error) {
 func (p *NodeNodes) DeleteByNodeIdAndNodesId(nodeId string, nodesId string) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().Delete(Table_NodeNodes_Name, map[string]interface{}{
-		"node_id": nodeId,
+		"node_id":  nodeId,
 		"nodes_id": nodesId,
 	}))
 	return

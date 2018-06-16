@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"strings"
 	"bzppx-codepub/app/models"
-	"time"
 	"bzppx-codepub/app/utils"
+	"strings"
+	"time"
 )
 
 type NodesController struct {
@@ -28,7 +28,7 @@ func (this *NodesController) Save() {
 
 	nodeGroup, err := models.NodesModel.HasNodesName(name)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+name+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + name + " 失败: " + err.Error())
 		this.jsonError("添加节点组失败！")
 	}
 	if nodeGroup {
@@ -36,18 +36,18 @@ func (this *NodesController) Save() {
 	}
 
 	nodesValue := map[string]interface{}{
-		"name": name,
-		"comment": comment,
+		"name":        name,
+		"comment":     comment,
 		"create_time": time.Now().Unix(),
 		"update_time": time.Now().Unix(),
 	}
 
 	nodesId, err := models.NodesModel.Insert(nodesValue)
 	if err != nil {
-		this.ErrorLog("添加节点组失败: "+err.Error())
+		this.ErrorLog("添加节点组失败: " + err.Error())
 		this.jsonError("添加节点组失败！")
-	}else {
-		this.InfoLog("添加节点组 "+utils.NewConvert().IntToString(nodesId, 10)+" 成功")
+	} else {
+		this.InfoLog("添加节点组 " + utils.NewConvert().IntToString(nodesId, 10) + " 成功")
 		this.jsonSuccess("添加节点组成功", nil, "/nodes/list")
 	}
 }
@@ -55,7 +55,7 @@ func (this *NodesController) Save() {
 // 节点组列表
 func (this *NodesController) List() {
 
-	page, _:= this.GetInt("page", 1)
+	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
@@ -63,15 +63,15 @@ func (this *NodesController) List() {
 	var err error
 	var count int64
 	var nodeGroups []map[string]string
-	if (keyword != "") {
+	if keyword != "" {
 		count, err = models.NodesModel.CountNodeGroupsByKeyword(keyword)
 		nodeGroups, err = models.NodesModel.GetNodeGroupsByKeywordAndLimit(keyword, limit, number)
-	}else {
+	} else {
 		count, err = models.NodesModel.CountNodeGroups()
 		nodeGroups, err = models.NodesModel.GetNodeGroupsByLimit(limit, number)
 	}
 	if err != nil {
-		this.ErrorLog("查找节点组列表失败: "+err.Error())
+		this.ErrorLog("查找节点组列表失败: " + err.Error())
 		this.viewError(err.Error(), "/nodes/list")
 	}
 
@@ -91,7 +91,7 @@ func (this *NodesController) Edit() {
 
 	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 失败: " + err.Error())
 		this.viewError("节点组不存在", "/nodes/list")
 	}
 
@@ -111,7 +111,7 @@ func (this *NodesController) Modify() {
 
 	nodes, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 失败: " + err.Error())
 		this.jsonError("节点组不存在！")
 	}
 	if len(nodes) == 0 {
@@ -119,16 +119,16 @@ func (this *NodesController) Modify() {
 	}
 
 	nodesValue := map[string]interface{}{
-		"comment": comment,
+		"comment":     comment,
 		"update_time": time.Now().Unix(),
 	}
 
 	_, err = models.NodesModel.Update(nodesId, nodesValue)
 	if err != nil {
-		this.ErrorLog("修改节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("修改节点组 " + nodesId + " 失败: " + err.Error())
 		this.jsonError("修改节点组失败！")
-	}else {
-		this.InfoLog("修改节点组 "+nodesId+" 成功")
+	} else {
+		this.InfoLog("修改节点组 " + nodesId + " 成功")
 		this.jsonSuccess("修改节点组成功", nil, "/nodes/list")
 	}
 }
@@ -144,7 +144,7 @@ func (this *NodesController) Delete() {
 
 	nodes, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 失败: " + err.Error())
 		this.jsonError("节点组不存在！")
 	}
 	if len(nodes) == 0 {
@@ -154,17 +154,17 @@ func (this *NodesController) Delete() {
 	// todo 判断节点组下的项目是否需要一起删除
 
 	nodesValue := map[string]interface{}{
-		"is_delete": models.NODES_DELETE,
+		"is_delete":   models.NODES_DELETE,
 		"update_time": time.Now().Unix(),
 	}
 
 	_, err = models.NodesModel.Update(nodesId, nodesValue)
 	if err != nil {
-		this.ErrorLog("删除节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("删除节点组 " + nodesId + " 失败: " + err.Error())
 		this.jsonError("删除节点组失败！")
 	}
 
-	this.InfoLog("删除节点组 "+nodesId+" 成功")
+	this.InfoLog("删除节点组 " + nodesId + " 成功")
 	this.jsonSuccess("删除节点组成功", nil, "/nodes/list")
 }
 
@@ -178,14 +178,14 @@ func (this *NodesController) Node() {
 
 	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 失败: " + err.Error())
 		this.viewError("节点组不存在", "/nodes/list")
 	}
 
 	// 查找该节点组下的节点
 	nodeNodes, err := models.NodeNodesModel.GetNodeNodesByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 下节点失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 下节点失败: " + err.Error())
 		this.viewError("查找节点错误", "/nodes/list")
 	}
 	if len(nodeNodes) == 0 {
@@ -197,14 +197,14 @@ func (this *NodesController) Node() {
 	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
 	if err != nil {
-		this.ErrorLog("查找节点失败: "+err.Error())
+		this.ErrorLog("查找节点失败: " + err.Error())
 		this.viewError("查找节点错误", "/nodes/list")
 	}
 
 	// 查找除 nodeIds 外的节点
 	otherNodes, err := models.NodeModel.GetNodeByNotNodeIds(nodeIds)
 	if err != nil {
-		this.ErrorLog("查找节点失败: "+err.Error())
+		this.ErrorLog("查找节点失败: " + err.Error())
 		this.viewError("查找节点错误", "/nodes/list")
 	}
 
@@ -228,7 +228,7 @@ func (this *NodesController) ImportNode() {
 	}
 	nodeGroup, err := models.NodesModel.GetNodeGroupByNodesId(nodesId)
 	if err != nil {
-		this.ErrorLog("查找节点组 "+nodesId+" 失败: "+err.Error())
+		this.ErrorLog("查找节点组 " + nodesId + " 失败: " + err.Error())
 		this.jsonError("节点组不存在！")
 	}
 	if len(nodeGroup) == 0 {
@@ -238,8 +238,8 @@ func (this *NodesController) ImportNode() {
 	var insertValues []map[string]interface{}
 	for _, nodeId := range nodeIds {
 		insertValue := map[string]interface{}{
-			"node_id": nodeId,
-			"nodes_id": nodesId,
+			"node_id":     nodeId,
+			"nodes_id":    nodesId,
 			"create_time": time.Now().Unix(),
 		}
 		insertValues = append(insertValues, insertValue)
@@ -250,7 +250,7 @@ func (this *NodesController) ImportNode() {
 		this.jsonError("导入节点失败！")
 	}
 
-	this.InfoLog("节点组 "+nodesId+" 导入节点 "+strings.Join(nodeIds, ",")+" 成功" )
+	this.InfoLog("节点组 " + nodesId + " 导入节点 " + strings.Join(nodeIds, ",") + " 成功")
 	this.jsonSuccess("导入节点成功！", nil, "/nodes/node?nodes_id="+nodesId)
 }
 
@@ -269,10 +269,10 @@ func (this *NodesController) Remove() {
 
 	err := models.NodeNodesModel.DeleteByNodeIdAndNodesId(nodeId, nodesId)
 	if err != nil {
-		this.ErrorLog("移除节点组 "+nodesId+" 下节点 "+nodeId+" 失败：" + err.Error())
+		this.ErrorLog("移除节点组 " + nodesId + " 下节点 " + nodeId + " 失败：" + err.Error())
 		this.jsonError("移除节点失败！")
 	}
 
-	this.InfoLog("移除节点组 "+nodesId+" 下节点 "+nodeId+" 成功" )
+	this.InfoLog("移除节点组 " + nodesId + " 下节点 " + nodeId + " 成功")
 	this.jsonSuccess("移除节点成功！", nil, "/nodes/node?nodes_id="+nodesId)
 }

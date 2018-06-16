@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"net"
 	"strings"
 	"time"
-	"net"
 )
 
 type Misc struct{}
@@ -20,7 +20,7 @@ func (m *Misc) GetMapDefault(mapValue map[string]interface{}, key string, def in
 	value, ok := mapValue[key]
 	if ok {
 		return value
-	}else {
+	} else {
 		return def
 	}
 }
@@ -60,7 +60,7 @@ func (m *Misc) GetLocalIp() string {
 	for _, addr := range addrSlice {
 		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 			if nil != ipnet.IP.To4() {
-				return  ipnet.IP.String()
+				return ipnet.IP.String()
 			}
 		}
 	}

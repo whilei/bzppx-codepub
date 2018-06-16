@@ -1,19 +1,19 @@
 package remotes
 
 import (
+	"bzppx-codepub/app/models"
 	"encoding/json"
 	"strconv"
-	"bzppx-codepub/app/models"
 	"time"
 )
 
 var Task = TaskRemote{}
 
 const (
-	Rpc_Task_Service           = "ServiceTask"
-	Rpc_Task_Method_Publish    = Rpc_Task_Service+".Publish"
-	Rpc_Task_Method_GetStatus  = Rpc_Task_Service+".Status"
-	Rpc_Task_Method_Delete     = Rpc_Task_Service+".Delete"
+	Rpc_Task_Service          = "ServiceTask"
+	Rpc_Task_Method_Publish   = Rpc_Task_Service + ".Publish"
+	Rpc_Task_Method_GetStatus = Rpc_Task_Service + ".Status"
+	Rpc_Task_Method_Delete    = Rpc_Task_Service + ".Delete"
 )
 
 type TaskRemote struct {
@@ -41,10 +41,10 @@ func (this *TaskRemote) GetResults(ip string, port string, token string, args ma
 	if res["status"] == strconv.Itoa(models.TASKLOG_STATUS_FINISH) {
 		taskLogId := args["task_log_id"].(string)
 		taskLogValue := map[string]interface{}{
-			"status": res["status"],
-			"is_success": res["is_success"],
-			"result": res["result"],
-			"commit_id": res["commit_id"],
+			"status":      res["status"],
+			"is_success":  res["is_success"],
+			"result":      res["result"],
+			"commit_id":   res["commit_id"],
 			"update_time": time.Now().Unix(),
 		}
 		_, err := models.TaskLogModel.Update(taskLogId, taskLogValue)

@@ -3,19 +3,18 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"io"
 	"errors"
+	"io"
 )
 
 type Codec struct {
-
 }
 
 func NewCodec() *Codec {
 	return &Codec{}
 }
 
-func (c *Codec) EncodePack(message []byte) ([]byte, error){
+func (c *Codec) EncodePack(message []byte) ([]byte, error) {
 
 	var messageLen = int32(len(message))
 	var pkg = new(bytes.Buffer)
@@ -53,6 +52,3 @@ func (c *Codec) DecodePack(read io.Reader) (string, error) {
 	}
 	return string(messageByte), nil
 }
-
-
-

@@ -7,8 +7,8 @@ import (
 var System = SystemRemote{}
 
 const (
-	Rpc_System_System           = "ServiceSystem"
-	Rpc_System_Method_Ping    = Rpc_System_System+".Ping"
+	Rpc_System_System      = "ServiceSystem"
+	Rpc_System_Method_Ping = Rpc_System_System + ".Ping"
 )
 
 type SystemRemote struct {
@@ -19,10 +19,10 @@ type SystemRemote struct {
 func (this *SystemRemote) Ping(ip string, port string, token string, args map[string]interface{}) (res map[string]string, err error) {
 	replay, err := this.Call(ip, port, token, Rpc_System_Method_Ping, args, 300)
 	if err != nil {
-		return map[string]string{"version:":"null"}, err
+		return map[string]string{"version:": "null"}, err
 	}
 	if replay == "ok" {
-		return map[string]string{"version:":"null"}, nil
+		return map[string]string{"version:": "null"}, nil
 	}
 	json.Unmarshal([]byte(replay), &res)
 	return res, nil

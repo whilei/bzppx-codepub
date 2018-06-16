@@ -1,38 +1,38 @@
 package container
 
 import (
-	"bzppx-codepub/app/remotes"
-	"time"
 	"bzppx-codepub/app/models"
+	"bzppx-codepub/app/remotes"
 	"github.com/astaxie/beego"
+	"time"
 )
 
 var Worker = NewWorker()
 
 type worker struct {
 	publishChan chan AgentMessage
-	statusChan chan AgentMessage
+	statusChan  chan AgentMessage
 }
 
 type AgentMessage struct {
-	Ip string
-	Port string
+	Ip    string
+	Port  string
 	Token string
-	Args map[string]interface{}
+	Args  map[string]interface{}
 }
 
 func NewWorker() *worker {
 	return &worker{
 		publishChan: make(chan AgentMessage, 1),
-		statusChan: make(chan AgentMessage, 1),
+		statusChan:  make(chan AgentMessage, 1),
 	}
 }
 
-func (w *worker) SendPublishChan(agentMsg AgentMessage)  {
+func (w *worker) SendPublishChan(agentMsg AgentMessage) {
 	w.publishChan <- agentMsg
 }
 
-func (w *worker) SendGetStatusChan(agentMsg AgentMessage)  {
+func (w *worker) SendGetStatusChan(agentMsg AgentMessage) {
 	w.statusChan <- agentMsg
 }
 
@@ -52,7 +52,7 @@ func (w *worker) StartPublish() {
 				if err != nil {
 					beego.Error(err.Error())
 					w.PublishFailed(agentMsg.Args["task_log_id"].(string), err.Error())
-				}else {
+				} else {
 					w.SendGetStatusChan(agentMsg)
 				}
 			}(agentMsg)
@@ -73,7 +73,7 @@ func (w *worker) StartGetStatus() {
 					}
 				}()
 				for {
-					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Token,agentMsg.Args)
+					isFinish, err := remotes.Task.GetResults(agentMsg.Ip, agentMsg.Port, agentMsg.Token, agentMsg.Args)
 					if err != nil {
 						beego.Error(err.Error())
 						w.UpdateResult(agentMsg.Args["task_log_id"].(string), err.Error())
@@ -90,31 +90,31 @@ func (w *worker) StartGetStatus() {
 
 func (t *worker) UpdateResult(taskLogId string, result string) {
 	update := map[string]interface{}{
-		"result": result,
+		"result":      result,
 		"update_time": time.Now().Unix(),
 	}
 	_, err := models.TaskLogModel.Update(taskLogId, update)
 	if err != nil {
-		beego.Error("update task_log result error: "+ err.Error())
+		beego.Error("update task_log result error: " + err.Error())
 	}
 }
 
-func (t *worker) PublishFailed(taskLogId string, result string)  {
+func (t *worker) PublishFailed(taskLogId string, result string) {
 	taskLogValue := map[string]interface{}{
-		"status": models.TASKLOG_STATUS_FINISH,
-		"is_success": models.TASKLOG_FAILED,
-		"result": result,
-		"commit_id": "",
+		"status":      models.TASKLOG_STATUS_FINISH,
+		"is_success":  models.TASKLOG_FAILED,
+		"result":      result,
+		"commit_id":   "",
 		"update_time": time.Now().Unix(),
 	}
 	_, err := models.TaskLogModel.Update(taskLogId, taskLogValue)
 	if err != nil {
-		beego.Error("update task_log public failed error: "+ err.Error())
+		beego.Error("update task_log public failed error: " + err.Error())
 	}
 }
 
 // 初始化
-func InitWorker()  {
+func InitWorker() {
 	go func() {
 		defer func() {
 			err := recover()

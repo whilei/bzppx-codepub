@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"strings"
-	"net/url"
-	"net/http"
 	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strings"
 )
 
 func NewRequest() *Request {
@@ -12,7 +12,6 @@ func NewRequest() *Request {
 }
 
 type Request struct {
-
 }
 
 // http get request
@@ -99,10 +98,10 @@ func (utils *Request) ParseString(params string) map[string]string {
 
 	paramsMap := map[string]string{}
 	for _, param := range strings.Split(params, "&") {
-		if ! strings.Contains(param, "=") {
+		if !strings.Contains(param, "=") {
 			continue
 		}
-		paramList :=strings.Split(param,"=")
+		paramList := strings.Split(param, "=")
 		paramsMap[paramList[0]] = paramList[1]
 	}
 	return paramsMap

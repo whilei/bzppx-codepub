@@ -1,8 +1,8 @@
 package container
 
 import (
-	"github.com/astaxie/beego"
 	"bzppx-codepub/app/models"
+	"github.com/astaxie/beego"
 	"time"
 )
 
@@ -13,11 +13,10 @@ func NewMonitor() *Monitor {
 }
 
 type Monitor struct {
-	
 }
 
 // 每 5 s 监控一次是否有没有提交的(暂时取消)
-func (m *Monitor) MonitorCreateStatus()  {
+func (m *Monitor) MonitorCreateStatus() {
 	for {
 		m.HandleCreateStatusTaskLog()
 		time.Sleep(10 * time.Second)
@@ -88,21 +87,21 @@ func (m *Monitor) HandleCreateStatusTaskLog() {
 			sha1Id = project["branch"]
 		}
 		args := map[string]interface{}{
-			"task_log_id":  taskLog["task_log_id"],
-			"url":          project["repository_url"],
-			"ssh_key":      project["ssh_key"],
-			"ssh_key_salt": project["ssh_key_salt"],
-			"path":         project["code_path"],
-			"branch":       sha1Id,
-			"username":     project["https_username"],
-			"password":     project["https_password"],
-			"dir_user":     project["code_dir_user"],
-			"pre_command":                  project["pre_command"],
-			"pre_command_exec_type":        project["pre_command_exec_type"],
-			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
-			"post_command":                 project["post_command"],
-			"post_command_exec_type":       project["post_command_exec_type"],
-			"post_command_exec_timeout":    project["post_command_exec_timeout"],
+			"task_log_id":               taskLog["task_log_id"],
+			"url":                       project["repository_url"],
+			"ssh_key":                   project["ssh_key"],
+			"ssh_key_salt":              project["ssh_key_salt"],
+			"path":                      project["code_path"],
+			"branch":                    sha1Id,
+			"username":                  project["https_username"],
+			"password":                  project["https_password"],
+			"dir_user":                  project["code_dir_user"],
+			"pre_command":               project["pre_command"],
+			"pre_command_exec_type":     project["pre_command_exec_type"],
+			"pre_command_exec_timeout":  project["pre_command_exec_timeout"],
+			"post_command":              project["post_command"],
+			"post_command_exec_type":    project["post_command_exec_type"],
+			"post_command_exec_timeout": project["post_command_exec_timeout"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {
@@ -113,10 +112,10 @@ func (m *Monitor) HandleCreateStatusTaskLog() {
 			}
 		}
 		agentMessage := AgentMessage{
-			Ip:   ip,
-			Port: port,
+			Ip:    ip,
+			Port:  port,
 			Token: token,
-			Args: args,
+			Args:  args,
 		}
 		Worker.SendPublishChan(agentMessage)
 	}

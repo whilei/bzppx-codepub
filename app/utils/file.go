@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
-	"io/ioutil"
-	"errors"
 )
 
 func NewFile() *File {
@@ -13,7 +13,6 @@ func NewFile() *File {
 }
 
 type File struct {
-	
 }
 
 // get file contents
@@ -54,12 +53,12 @@ func (f *File) PathIsEmpty(path string) bool {
 }
 
 // is write permission
-func (f *File) IsWritable(filename string) (error) {
+func (f *File) IsWritable(filename string) error {
 	file, err := os.OpenFile(filename, os.O_WRONLY, 0666)
 	if err != nil {
 		if os.IsPermission(err) {
 			return errors.New("Error: Write permission denied.")
-		}else {
+		} else {
 			return err
 		}
 	}
@@ -68,12 +67,12 @@ func (f *File) IsWritable(filename string) (error) {
 }
 
 // is read permission
-func (f *File) IsReadable(filename string) (error)  {
+func (f *File) IsReadable(filename string) error {
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0666)
 	if err != nil {
 		if os.IsPermission(err) {
 			return errors.New("Error: Read permission denied.")
-		}else {
+		} else {
 			return err
 		}
 	}
@@ -82,7 +81,7 @@ func (f *File) IsReadable(filename string) (error)  {
 }
 
 // is read and write permission
-func (f *File) IsWriterReadable(file string) (error)  {
+func (f *File) IsWriterReadable(file string) error {
 	err := f.IsWritable(file)
 	if err != nil {
 		return err
@@ -94,5 +93,3 @@ func (f *File) IsWriterReadable(file string) (error)  {
 
 	return nil
 }
-
-

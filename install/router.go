@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bzppx-codepub/install/controllers"
-	"net/http"
 	"bzppx-codepub/app/utils"
+	"bzppx-codepub/install/controllers"
 	"github.com/astaxie/beego"
+	"net/http"
 )
 
 func init() {

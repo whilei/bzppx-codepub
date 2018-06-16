@@ -22,7 +22,7 @@ func (p *Nodes) GetNodeGroupByNodesId(nodesId string) (nodes map[string]string, 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
-		"nodes_id": nodesId,
+		"nodes_id":  nodesId,
 		"is_delete": NODES_NORMAL,
 	}))
 	if err != nil {
@@ -38,8 +38,8 @@ func (p *Nodes) HasSameNodesName(nodesId, name string) (has bool, err error) {
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
 		"nodes_id <>": nodesId,
-		"name":   name,
-		"is_delete": NODES_NORMAL,
+		"name":        name,
+		"is_delete":   NODES_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
 		return
@@ -55,7 +55,7 @@ func (p *Nodes) HasNodesName(name string) (has bool, err error) {
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": NODES_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -72,7 +72,7 @@ func (p *Nodes) GetNodesByName(name string) (nodes map[string]string, err error)
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Nodes_Name).Where(map[string]interface{}{
-		"name": name,
+		"name":      name,
 		"is_delete": NODES_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -113,7 +113,7 @@ func (p *Nodes) Update(nodesId string, nodes map[string]interface{}) (id int64, 
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Exec(db.AR().Update(Table_Nodes_Name, nodes, map[string]interface{}{
-		"nodes_id": nodesId,
+		"nodes_id":  nodesId,
 		"is_delete": NODES_NORMAL,
 	}))
 	if err != nil {
@@ -171,8 +171,8 @@ func (nodes *Nodes) CountNodeGroups() (count int64, err error) {
 			Select("count(*) as total").
 			From(Table_Nodes_Name).
 			Where(map[string]interface{}{
-			"is_delete": NODES_NORMAL,
-		}))
+				"is_delete": NODES_NORMAL,
+			}))
 	if err != nil {
 		return
 	}

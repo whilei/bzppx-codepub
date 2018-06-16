@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"strings"
 	"bzppx-codepub/app/models"
-	"time"
 	"bzppx-codepub/app/utils"
+	"strings"
+	"time"
 )
 
 type GroupController struct {
@@ -28,7 +28,7 @@ func (this *GroupController) Save() {
 
 	group, err := models.GroupModel.HasGroupName(name)
 	if err != nil {
-		this.ErrorLog("查找项目组 "+name+" 失败："+err.Error())
+		this.ErrorLog("查找项目组 " + name + " 失败：" + err.Error())
 		this.jsonError("添加项目组失败！")
 	}
 	if group {
@@ -36,18 +36,18 @@ func (this *GroupController) Save() {
 	}
 
 	groupValue := map[string]interface{}{
-		"name": name,
-		"comment": comment,
+		"name":        name,
+		"comment":     comment,
 		"create_time": time.Now().Unix(),
 		"update_time": time.Now().Unix(),
 	}
 
 	groupId, err := models.GroupModel.Insert(groupValue)
 	if err != nil {
-		this.ErrorLog("添加项目组失败: "+err.Error())
+		this.ErrorLog("添加项目组失败: " + err.Error())
 		this.jsonError("添加项目组失败！")
-	}else {
-		this.InfoLog("添加项目组 "+utils.NewConvert().IntToString(groupId, 10)+" 成功")
+	} else {
+		this.InfoLog("添加项目组 " + utils.NewConvert().IntToString(groupId, 10) + " 成功")
 		this.jsonSuccess("添加项目组成功", nil, "/group/list")
 	}
 }
@@ -55,7 +55,7 @@ func (this *GroupController) Save() {
 // 项目组列表
 func (this *GroupController) List() {
 
-	page, _:= this.GetInt("page", 1)
+	page, _ := this.GetInt("page", 1)
 	keyword := strings.Trim(this.GetString("keyword", ""), "")
 
 	number := 20
@@ -63,15 +63,15 @@ func (this *GroupController) List() {
 	var err error
 	var count int64
 	var groups []map[string]string
-	if (keyword != "") {
+	if keyword != "" {
 		count, err = models.GroupModel.CountGroupsByKeyword(keyword)
 		groups, err = models.GroupModel.GetGroupsByKeywordAndLimit(keyword, limit, number)
-	}else {
+	} else {
 		count, err = models.GroupModel.CountGroups()
 		groups, err = models.GroupModel.GetGroupsByLimit(limit, number)
 	}
 	if err != nil {
-		this.ErrorLog("查找项目组列表失败："+err.Error())
+		this.ErrorLog("查找项目组列表失败：" + err.Error())
 		this.viewError("查找项目组列表失败", "/group/list")
 	}
 
@@ -91,7 +91,7 @@ func (this *GroupController) Edit() {
 
 	group, err := models.GroupModel.GetGroupByGroupId(groupId)
 	if err != nil {
-		this.ErrorLog("查找项目组 "+groupId+" 失败："+err.Error())
+		this.ErrorLog("查找项目组 " + groupId + " 失败：" + err.Error())
 		this.viewError("项目组不存在", "/group/list")
 	}
 
@@ -111,7 +111,7 @@ func (this *GroupController) Modify() {
 
 	group, err := models.GroupModel.GetGroupByGroupId(groupId)
 	if err != nil {
-		this.ErrorLog("查找项目组 "+groupId+" 失败："+err.Error())
+		this.ErrorLog("查找项目组 " + groupId + " 失败：" + err.Error())
 		this.jsonError("项目组不存在！")
 	}
 	if len(group) == 0 {
@@ -119,16 +119,16 @@ func (this *GroupController) Modify() {
 	}
 
 	groupValue := map[string]interface{}{
-		"comment": comment,
+		"comment":     comment,
 		"update_time": time.Now().Unix(),
 	}
 
 	_, err = models.GroupModel.Update(groupId, groupValue)
 	if err != nil {
-		this.ErrorLog("修改项目组 "+groupId+" 失败: "+err.Error())
+		this.ErrorLog("修改项目组 " + groupId + " 失败: " + err.Error())
 		this.jsonError("修改项目组失败！")
-	}else {
-		this.InfoLog("修改项目组 "+groupId+" 成功")
+	} else {
+		this.InfoLog("修改项目组 " + groupId + " 成功")
 		this.jsonSuccess("修改项目组成功", nil, "/group/list")
 	}
 }
@@ -144,7 +144,7 @@ func (this *GroupController) Delete() {
 
 	group, err := models.GroupModel.GetGroupByGroupId(groupId)
 	if err != nil {
-		this.ErrorLog("查找项目组 "+groupId+" 失败："+err.Error())
+		this.ErrorLog("查找项目组 " + groupId + " 失败：" + err.Error())
 		this.jsonError("项目组不存在！")
 	}
 	if len(group) == 0 {
@@ -154,16 +154,16 @@ func (this *GroupController) Delete() {
 	// todo 判断项目组下的项目是否需要一起删除
 
 	groupValue := map[string]interface{}{
-		"is_delete": models.GROUP_DELETE,
+		"is_delete":   models.GROUP_DELETE,
 		"update_time": time.Now().Unix(),
 	}
 
 	_, err = models.GroupModel.Update(groupId, groupValue)
 	if err != nil {
-		this.ErrorLog("删除项目组 "+groupId+" 失败: "+err.Error())
+		this.ErrorLog("删除项目组 " + groupId + " 失败: " + err.Error())
 		this.jsonError("删除项目组失败！")
 	}
 
-	this.InfoLog("删除项目组 "+groupId+" 成功")
+	this.InfoLog("删除项目组 " + groupId + " 成功")
 	this.jsonSuccess("删除项目组成功", nil, "/group/list")
 }

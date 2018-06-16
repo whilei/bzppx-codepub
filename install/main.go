@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "bzppx-codepub/install/storage"
-	"github.com/astaxie/beego"
 	"flag"
+	"github.com/astaxie/beego"
 )
 
 // 安装程序
@@ -14,6 +14,5 @@ var (
 
 func main() {
 	flag.Parse()
-	beego.Run(":"+*port)
+	beego.Run(":" + *port)
 }
-

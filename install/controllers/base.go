@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
-	"strings"
-	"github.com/astaxie/beego"
 	"bzppx-codepub/install/storage"
+	"encoding/json"
+	"github.com/astaxie/beego"
+	"strings"
 )
 
 type BaseController struct {
@@ -27,7 +27,7 @@ func (this *BaseController) Prepare() {
 		return
 	}
 	if storage.Data.Status == storage.Install_Start {
-		if (methodName == "ready" && this.isPost()) {
+		if methodName == "ready" && this.isPost() {
 			return
 		}
 		this.Redirect("/install/end", 302)
@@ -39,7 +39,7 @@ func (this *BaseController) Prepare() {
 			storage.Data.IsSuccess = storage.Install_Default
 			storage.Data.Status = storage.Install_Ready
 			storage.Data.Result = ""
-		}else {
+		} else {
 			this.StopRun()
 		}
 	}

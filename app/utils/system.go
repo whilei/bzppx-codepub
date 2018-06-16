@@ -1,9 +1,8 @@
 package utils
 
 type System struct {
-
 }
 
-func (s *System) GetCpu()  {
+func (s *System) GetCpu() {
 
 }

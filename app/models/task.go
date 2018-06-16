@@ -253,8 +253,8 @@ func (l *Task) CountTaskAndUserByCreateTime(startTime int64, endTime int64) (tot
 	sql := db.AR().Select("count(*) as total, count(distinct user_id) as user_total").
 		From(Table_Task_Name).
 		Where(map[string]interface{}{
-		"create_time >= ": startTime,
-		"create_time < ": endTime,
+			"create_time >= ": startTime,
+			"create_time < ":  endTime,
 		})
 	rs, err = db.Query(sql)
 	if err != nil {

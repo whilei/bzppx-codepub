@@ -3,13 +3,13 @@ package controllers
 import (
 	"bzppx-codepub/app/container"
 	"bzppx-codepub/app/models"
+	"bzppx-codepub/app/remotes"
 	"bzppx-codepub/app/utils"
+	"fmt"
 	"strconv"
 	"strings"
-	"time"
-	"bzppx-codepub/app/remotes"
 	"sync"
-	"fmt"
+	"time"
 )
 
 type PublishController struct {
@@ -257,11 +257,11 @@ func (this *PublishController) History() {
 	}
 	for _, task := range tasks {
 		for _, taskLog := range taskLogs {
-			if (taskLog["task_id"] == task["task_id"]) && (taskLog["status"] != "2")  {
+			if (taskLog["task_id"] == task["task_id"]) && (taskLog["status"] != "2") {
 				task["status"] = "2" // 执行中
 				break
 			}
-			if (taskLog["task_id"] == task["task_id"]) && (taskLog["is_success"] == "0")  {
+			if (taskLog["task_id"] == task["task_id"]) && (taskLog["is_success"] == "0") {
 				task["status"] = "0" // 执行失败
 				continue
 			}
@@ -301,7 +301,7 @@ func (this *PublishController) TaskLog() {
 	for _, taskLog := range taskLogs {
 		for _, node := range nodes {
 			if taskLog["node_id"] == node["node_id"] {
-				taskLog["node_address"] = node["ip"]+":"+node["port"]
+				taskLog["node_address"] = node["ip"] + ":" + node["port"]
 			}
 		}
 	}
@@ -371,7 +371,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		this.jsonError("该项目下还没有节点！请先添加节点后再发布")
 	}
 	if err != nil {
-		this.ErrorLog("创建任务查询项目 "+projectId+" 节点关系失败：" + err.Error())
+		this.ErrorLog("创建任务查询项目 " + projectId + " 节点关系失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
@@ -382,14 +382,14 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 	nodes, err := models.NodeModel.GetNodeByNodeIds(nodeIds)
 	if err != nil {
-		this.ErrorLog("创建任务查找项目 "+projectId+" 节点信息失败：" + err.Error())
+		this.ErrorLog("创建任务查找项目 " + projectId + " 节点信息失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
 	// 检查所有的节点是否通畅
 	type BadNodes struct {
 		Nodes []map[string]string
-		Lock sync.Mutex
+		Lock  sync.Mutex
 	}
 	badNodes := new(BadNodes)
 	var wait sync.WaitGroup
@@ -411,7 +411,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 				badNodes.Lock.Lock()
 				badNodes.Nodes = append(badNodes.Nodes, node)
 				badNodes.Lock.Unlock()
-				this.ErrorLog("项目 "+projectId+" 创建任务时节点 "+node["node_id"]+" 检测失败：" + err.Error())
+				this.ErrorLog("项目 " + projectId + " 创建任务时节点 " + node["node_id"] + " 检测失败：" + err.Error())
 			}
 		}(node)
 	}
@@ -423,18 +423,18 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	// 创建发布任务
 	taskId, err := models.TaskModel.Insert(taskValue)
 	if err != nil {
-		this.ErrorLog("项目 "+projectId+" 创建发布任务失败：" + err.Error())
+		this.ErrorLog("项目 " + projectId + " 创建发布任务失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
 	// 修改项目最后一次发布时间
 	projectValue := map[string]interface{}{
 		"last_publish_time": taskValue["create_time"],
-		"update_time": time.Now().Unix(),
+		"update_time":       time.Now().Unix(),
 	}
 	_, err = models.ProjectModel.Update(projectId, projectValue)
 	if err != nil {
-		this.ErrorLog("项目 "+projectId+" 创建任务修改最后发布时间失败：" + err.Error())
+		this.ErrorLog("项目 " + projectId + " 创建任务修改最后发布时间失败：" + err.Error())
 		this.jsonError("创建任务失败！")
 	}
 
@@ -453,7 +453,7 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 	}
 	err = models.TaskLogModel.InsertBatch(taskLog)
 	if err != nil {
-		this.ErrorLog("项目 "+projectId+" 创建节点任务日志失败：" + err.Error())
+		this.ErrorLog("项目 " + projectId + " 创建节点任务日志失败：" + err.Error())
 		this.jsonError("创建任务日志失败！")
 	}
 
@@ -482,21 +482,21 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 		port := ""
 		token := ""
 		args := map[string]interface{}{
-			"task_log_id":  taskLog["task_log_id"],
-			"url":          project["repository_url"],
-			"ssh_key":      project["ssh_key"],
-			"ssh_key_salt": project["ssh_key_salt"],
-			"path":         project["code_path"],
-			"branch":       branch,
-			"username":     project["https_username"],
-			"password":     project["https_password"],
-			"dir_user":     project["code_dir_user"],
-			"pre_command":                  project["pre_command"],
-			"pre_command_exec_type":        project["pre_command_exec_type"],
-			"pre_command_exec_timeout":     project["pre_command_exec_timeout"],
-			"post_command":                 project["post_command"],
-			"post_command_exec_type":       project["post_command_exec_type"],
-			"post_command_exec_timeout":    project["post_command_exec_timeout"],
+			"task_log_id":               taskLog["task_log_id"],
+			"url":                       project["repository_url"],
+			"ssh_key":                   project["ssh_key"],
+			"ssh_key_salt":              project["ssh_key_salt"],
+			"path":                      project["code_path"],
+			"branch":                    branch,
+			"username":                  project["https_username"],
+			"password":                  project["https_password"],
+			"dir_user":                  project["code_dir_user"],
+			"pre_command":               project["pre_command"],
+			"pre_command_exec_type":     project["pre_command_exec_type"],
+			"pre_command_exec_timeout":  project["pre_command_exec_timeout"],
+			"post_command":              project["post_command"],
+			"post_command_exec_type":    project["post_command_exec_type"],
+			"post_command_exec_timeout": project["post_command_exec_timeout"],
 		}
 		for _, node := range nodes {
 			if node["node_id"] == taskLog["node_id"] {
@@ -507,10 +507,10 @@ func (this *PublishController) addTaskAndTaskLog(taskValue map[string]interface{
 			}
 		}
 		agentMessage := container.AgentMessage{
-			Ip:   ip,
-			Port: port,
+			Ip:    ip,
+			Port:  port,
 			Token: token,
-			Args: args,
+			Args:  args,
 		}
 		container.Worker.SendPublishChan(agentMessage)
 	}

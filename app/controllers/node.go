@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"bzppx-codepub/app/models"
+	"bzppx-codepub/app/remotes"
 	"bzppx-codepub/app/utils"
+	"encoding/json"
+	"fmt"
 	"regexp"
 	"strings"
-	"time"
-	"encoding/json"
-	"bzppx-codepub/app/remotes"
 	"sync"
-	"fmt"
+	"time"
 )
 
 type NodeController struct {
@@ -316,9 +316,9 @@ func (this *NodeController) Status() {
 		this.jsonError(err.Error())
 	}
 
-	type Data struct{
+	type Data struct {
 		NodesStatus []map[string]interface{}
-		Lock sync.Mutex
+		Lock        sync.Mutex
 	}
 	data := new(Data)
 	var wait sync.WaitGroup
@@ -335,14 +335,14 @@ func (this *NodeController) Status() {
 			}()
 			nodeStatus := map[string]interface{}{
 				"node_id": node["node_id"],
-				"status": 1,
+				"status":  1,
 				"version": "null",
 			}
 			res, err := remotes.System.Ping(node["ip"], node["port"], node["token"], nil)
 			if err != nil {
-				this.ErrorLog("节点 "+node["node_id"]+" 连接失败：" + err.Error())
+				this.ErrorLog("节点 " + node["node_id"] + " 连接失败：" + err.Error())
 				nodeStatus["status"] = 0
-			}else {
+			} else {
 				nodeStatus["version"] = res["version"]
 			}
 			data.Lock.Lock()

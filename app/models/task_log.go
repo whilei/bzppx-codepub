@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/snail007/go-activerecord/mysql"
 	"bzppx-codepub/app/utils"
+	"github.com/snail007/go-activerecord/mysql"
 )
 
 const (
@@ -190,7 +190,7 @@ func (t *TaskLog) CountTaskLogByTaskIdsAndIsSuccess(taskIds []string, isSuccess 
 	var rs *mysql.ResultSet
 
 	sql := db.AR().From(Table_TaskLog_Name).Select("count(*) as total").Where(map[string]interface{}{
-		"task_id": taskIds,
+		"task_id":    taskIds,
 		"is_success": isSuccess,
 	})
 
@@ -213,8 +213,8 @@ func (l *TaskLog) CountByCreateTimeGroupByIsSuccess(startTime int64, endTime int
 	sql := db.AR().Select("is_success, count('is_success') as total").
 		From(Table_TaskLog_Name).
 		Where(map[string]interface{}{
-		"create_time >= ": startTime,
-		"create_time < ": endTime,
+			"create_time >= ": startTime,
+			"create_time < ":  endTime,
 		}).
 		GroupBy("is_success")
 	rs, err = db.Query(sql)

@@ -62,7 +62,7 @@ func (node *Node) GetNodesByKeywordsAndLimit(keywords map[string]string, limit i
 	var rs *mysql.ResultSet
 
 	where := map[string]interface{}{
-		"ip LIKE": "%" + keywords["ip"] + "%",
+		"ip LIKE":   "%" + keywords["ip"] + "%",
 		"is_delete": NODE_NORMAL,
 	}
 
@@ -83,7 +83,7 @@ func (node *Node) CountNodesByKeywords(keywords map[string]string) (count int64,
 	var rs *mysql.ResultSet
 
 	where := map[string]interface{}{
-		"ip LIKE": "%" + keywords["ip"] + "%",
+		"ip LIKE":   "%" + keywords["ip"] + "%",
 		"is_delete": NODE_NORMAL,
 	}
 
@@ -186,8 +186,8 @@ func (node *Node) GetNodeByNotNodeIds(nodeIds []string) (nodes []map[string]stri
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Node_Name).Where(map[string]interface{}{
-		"node_id NOT":   nodeIds,
-		"is_delete": NODE_NORMAL,
+		"node_id NOT": nodeIds,
+		"is_delete":   NODE_NORMAL,
 	}))
 	if err != nil {
 		return

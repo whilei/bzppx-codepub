@@ -1,23 +1,22 @@
 package remotes
 
 import (
+	"bzppx-agent-codepub/utils"
 	"crypto/tls"
 	"errors"
+	"github.com/astaxie/beego"
+	"net"
 	"net/rpc"
 	"time"
-	"net"
-	"bzppx-agent-codepub/utils"
-	"github.com/astaxie/beego"
 )
 
 var Conn_Timeout = beego.AppConfig.DefaultInt64("agent.tls_timeout", 1000)
 
 type BaseRemote struct {
-
 }
 
 func (b *BaseRemote) Call(ip string, port string, token string, method string, args map[string]interface{}, timeout int64) (reply string, err error) {
-	address := ip + ":" +port
+	address := ip + ":" + port
 	if address == "" {
 		return reply, errors.New("codepub connect agent error: ip:port is not empty!")
 	}
@@ -54,7 +53,7 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 	// read decode pack
 	str, err := utils.NewCodec().DecodePack(conn)
 	if err != nil {
-		return reply, errors.New("codepub read token result error: "+err.Error())
+		return reply, errors.New("codepub read token result error: " + err.Error())
 	}
 	if str != "success" {
 		return reply, errors.New("codepub connect agent token error!")
@@ -63,7 +62,7 @@ func (b *BaseRemote) Call(ip string, port string, token string, method string, a
 
 	err = rpcClient.Call(method, args, &reply)
 	if err != nil {
-		return reply, errors.New("codepub call agent error: "+err.Error())
+		return reply, errors.New("codepub call agent error: " + err.Error())
 	}
 
 	return reply, nil

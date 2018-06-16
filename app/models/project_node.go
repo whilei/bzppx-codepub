@@ -20,7 +20,7 @@ func (p *ProjectNode) DeleteProjectNodeByNodeId(nodeId string) (err error) {
 func (p *ProjectNode) DeleteByProjectIdNodeIds(projectId string, nodeIds []string) (err error) {
 	db := G.DB()
 	_, err = db.Exec(db.AR().Delete(Table_ProjectNode_Name, map[string]interface{}{
-		"node_id": nodeIds,
+		"node_id":    nodeIds,
 		"project_id": projectId,
 	}))
 	return

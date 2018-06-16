@@ -37,7 +37,7 @@ func (p *Notice) GetNoticeByTitle(title string) (notice map[string]string, err e
 	db := G.DB()
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Notice_Name).Where(map[string]interface{}{
-		"title": title,
+		"title":     title,
 		"is_delete": NOTICE_NORMAL,
 	}).Limit(0, 1))
 	if err != nil {
@@ -88,7 +88,6 @@ func (p *Notice) Update(noticeId string, notice map[string]interface{}) (id int6
 	return
 }
 
-
 //根据关键字分页获取公告
 func (notice *Notice) GetNoticesByKeywordAndLimit(keyword string, limit int, number int) (notices []map[string]string, err error) {
 
@@ -96,7 +95,7 @@ func (notice *Notice) GetNoticesByKeywordAndLimit(keyword string, limit int, num
 	var rs *mysql.ResultSet
 	rs, err = db.Query(db.AR().From(Table_Notice_Name).Where(map[string]interface{}{
 		"title LIKE": "%" + keyword + "%",
-		"is_delete": NOTICE_NORMAL,
+		"is_delete":  NOTICE_NORMAL,
 	}).Limit(limit, number).OrderBy("notice_id", "DESC"))
 	if err != nil {
 		return
@@ -137,8 +136,8 @@ func (notice *Notice) CountNotices() (count int64, err error) {
 			Select("count(*) as total").
 			From(Table_Notice_Name).
 			Where(map[string]interface{}{
-			"is_delete": NOTICE_NORMAL,
-		}))
+				"is_delete": NOTICE_NORMAL,
+			}))
 	if err != nil {
 		return
 	}
@@ -156,7 +155,7 @@ func (notice *Notice) CountNoticesByKeyword(keyword string) (count int64, err er
 		From(Table_Notice_Name).
 		Where(map[string]interface{}{
 			"title LIKE": "%" + keyword + "%",
-			"is_delete": NOTICE_NORMAL,
+			"is_delete":  NOTICE_NORMAL,
 		}))
 	if err != nil {
 		return
